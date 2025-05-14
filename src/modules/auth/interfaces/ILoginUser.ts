@@ -1,4 +1,4 @@
-
+import { ObjectId } from "mongoose";
 
 export interface ILoginReq {
     email: string,
@@ -6,7 +6,8 @@ export interface ILoginReq {
 }
 
 export interface ILoginRes {
+    id: string,
     email: string,
-    password: string,
     token: string
+    role?: 'barber' | 'client';
 }

@@ -1,7 +1,8 @@
 import express, { Application } from 'express';
 import { config } from 'dotenv';
-import { ErrorHandler } from './core/middleware/error.middleware';  // Importa la clase ErrorHandler
+import { ErrorHandler } from './core/middleware/error.middleware';
 import userRoutes from './modules/user/routes/user.routes';  // Rutas del módulo de usuario
+import AuthRoutes from "./modules/auth/routes/auth.routes";
 
 config();
 
@@ -13,6 +14,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Rutas de la API
 app.use('/api/users', userRoutes);
+app.use('/api/auth', AuthRoutes);
+
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
     ErrorHandler.handle(err, req, res, next);

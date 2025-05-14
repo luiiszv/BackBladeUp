@@ -1,17 +1,18 @@
 
-import { authService } from "../services/auth.service";
+import { AuthService } from "../services/auth.service";
 import { LoginDto } from "../dto/loginDto";
 import { NextFunction, Request, Response } from "express";
 
 
-//Errrors
 
+//Errrors
 import { HttpError } from "../../../core/errors/HttpError";
+import { UnauthorizedError } from "../../../core/errors/UnauthorizedError";
 
 
 export class authController {
 
-    constructor(private userService: authService) {
+    constructor(private userService: AuthService) {
 
     }
 
@@ -30,12 +31,24 @@ export class authController {
 
 
             const userLioggin = await this.userService.login(ILoginReq!)
-            res.status(201).json(userLioggin);
+            res.status(200).json(userLioggin);
 
         } catch (error) {
             next(error)
 
         }
     }
+
+
+
+
+    verify = async (req: Request, res: Response) => {
+
+        res.status(200).json({ message: "Valid Token", user: req.user });
+    };
+
+
+
+
 
 }

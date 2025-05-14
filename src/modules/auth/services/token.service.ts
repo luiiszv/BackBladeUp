@@ -1,57 +1,81 @@
-
+import { sign, verify, decode } from 'jsonwebtoken';
+import { jwtConfig } from '../../../config/jwt.config';
+import { UnauthorizedError } from "../../../core/errors/UnauthorizedError";
 import { IUser } from '../../user/interfaces/user.interface';
-import { jwtConfig } from '../config/jwt.config';
-
+import { ITokenPayload } from '../interfaces/token-payload.interface';
+import { jwtData } from '../../../types/express';
 
 export class TokenService {
-  constructor(private readonly jwtService: JwtService) {}
-
   /**
-   * Genera un token de acceso JWT
+   * Genera un token de acceso JWT (versión con promesa)
    */
-  public generateAccessToken(user: IUser): string {
-    const payload = {
-      sub: user._id,
+  public async generateAccessToken(user: IUser): Promise<string> {
+    if (!user) {
+      throw new Error('User is missing');
+    }
+
+    const payload: object = {
+      userId: user._id,
       email: user.email,
       role: user.role
+
     };
 
-    return this.jwtService.sign(payload, {
-      secret: jwtConfig.accessToken.secret,
-      expiresIn: jwtConfig.accessToken.expiresIn
+    return new Promise((resolve, reject) => {
+      sign(payload, jwtConfig.accessToken.secret, { expiresIn: "1d" }, (err, token) => {
+        if (err) return reject(err);
+        resolve(token!);
+      });
     });
   }
 
   /**
-   * Genera un token de refresco JWT
+   * Verifica un token JWT (versión con promesa)
    */
-//   public generateRefreshToken(user: IUser): string {
-//     const payload = {
-//       sub: user._id,
-//       tokenVersion: user.tokenVersion // Asegúrate de tener este campo en tu User model
-//     };
-
-//     return this.jwtService.sign(payload, {
-//       secret: jwtConfig.refreshToken.secret,
-//       expiresIn: jwtConfig.refreshToken.expiresIn
-//     });
-//   }
-
-  /**
-   * Verifica un token JWT
-   */
-  public verifyToken<T>(token: string): T {
-    try {
-      return this.jwtService.verify(token);
-    } catch (error) {
-      throw new Error('Invalid or expired token');
+  public async verifyToken<T>(token: string): Promise<jwtData> {
+    if (!token) {
+      throw new UnauthorizedError('No token provided');
     }
+
+    return new Promise((resolve, reject) => {
+      verify(
+        token,
+        jwtConfig.accessToken.secret,
+        (err, decoded) => {
+          if (err) return reject(new UnauthorizedError('Invalid or expired token'));
+          if (!decoded) return reject(new UnauthorizedError('Token could not be verified'));
+          resolve(decoded as jwtData);
+        }
+      );
+    });
   }
 
   /**
    * Decodifica un token JWT sin verificar su validez
+   * (No necesita promesa ya que decode es síncrono)
    */
-  public decodeToken<T>(token: string): T {
-    return this.jwtService.decode(token) as T;
+  public decodeToken<T>(token: string): T | null {
+    if (!token) {
+      return null;
+    }
+
+    try {
+      return decode(token) as T;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Extrae el token de un header Authorization
+   * (Método auxiliar sigue siendo síncrono)
+   */
+  public extractTokenFromHeader(authHeader: string | undefined): string | null {
+    if (!authHeader) {
+      return null;
+    }
+
+    const [type, token] = authHeader.split(' ');
+    return type === 'Bearer' ? token : null;
   }
 }
