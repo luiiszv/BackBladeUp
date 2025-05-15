@@ -3,11 +3,9 @@ import { AuthService } from "../services/auth.service";
 import { LoginDto } from "../dto/loginDto";
 import { NextFunction, Request, Response } from "express";
 
-
-
 //Errrors
 import { HttpError } from "../../../core/errors/HttpError";
-import { UnauthorizedError } from "../../../core/errors/UnauthorizedError";
+
 
 
 export class authController {
