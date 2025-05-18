@@ -31,6 +31,10 @@ const userSchema = new Schema<IUser>({
         type: Date,
         default: Date.now
     },
+    isBarberActive: {
+        type: Boolean,
+        default: false
+    },
     active: {
         type: Boolean,
         default: true

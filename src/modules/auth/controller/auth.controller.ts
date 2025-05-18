@@ -10,9 +10,7 @@ import { HttpError } from "../../../core/errors/HttpError";
 
 export class authController {
 
-    constructor(private userService: AuthService) {
-
-    }
+    constructor(private userService: AuthService) {    }
 
     loginUser = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -25,9 +23,6 @@ export class authController {
 
             }
 
-
-
-
             const userLioggin = await this.userService.login(ILoginReq!)
             res.status(200).json(userLioggin);
 
@@ -37,16 +32,9 @@ export class authController {
         }
     }
 
-
-
-
     verify = async (req: Request, res: Response) => {
 
         res.status(200).json({ message: "Valid Token", user: req.user });
     };
-
-
-
-
 
 }

@@ -1,8 +1,11 @@
 import express, { Application } from 'express';
 import { config } from 'dotenv';
 import { ErrorHandler } from './core/middleware/error.middleware';
+
+//Routes
 import userRoutes from './modules/user/routes/user.routes';  // Rutas del módulo de usuario
 import AuthRoutes from "./modules/auth/routes/auth.routes";
+import BarberRoutes from "./modules/barberServices/routes/barber.routes";
 
 import swaggerUi from "swagger-ui-express"; //swagger
 
@@ -21,6 +24,8 @@ import { any } from 'zod';
 // Rutas de la API
 app.use('/api/users', userRoutes);
 app.use('/api/auth', AuthRoutes);
+app.use('/api/barbers', BarberRoutes);
+
 
 //SwaggerDocs
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
@@ -32,7 +37,7 @@ app.get("/", (req, res) => {
 
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-    ErrorHandler.handle(err, req, res, next);
+  ErrorHandler.handle(err, req, res, next);
 });
 
 // Configuración del puerto

@@ -9,4 +9,6 @@ export interface IUser extends Document {
     role?: 'barber' | 'client';
     creationDate?: Date;
     active?: boolean;
+    isBarberActive?: boolean;
+
 }
