@@ -86,8 +86,36 @@ router.post('/register', userController.createUser);
  *                 $ref: '#/components/schemas/UserDto'
  */
 router.get('/', userController.getUsers);
+
+
+/**
+ * @swagger
+ * /api/users/{id}:
+ *   get:
+ *     summary: Obtener usuario por ID
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID del usuario
+ *     responses:
+ *       200:
+ *         description: Usuario encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserDto'
+ *       404:
+ *         description: Usuario no encontrado
+ */
 router.get('/:id', userController.getUserById);
+
+
 router.put('/:id', userController.updateUser);
+
 router.delete('/:id', userController.deleteUser);
 
 export default router;

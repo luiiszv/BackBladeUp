@@ -1,5 +1,5 @@
 
-import { IBarber } from "../interfaces/IBarber";
+import { IBarber } from "../interfaces/iBarber";
 import { IBarberRepository } from "../interfaces/IBarberRepository";
 import { BarberRepository } from "../repository/barber.repository";
 import { NotFoundError } from "../../../core/errors/NotFoundError";
