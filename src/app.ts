@@ -5,7 +5,8 @@ import { ErrorHandler } from './core/middleware/error.middleware';
 //Routes
 import userRoutes from './modules/user/routes/user.routes';  // Rutas del módulo de usuario
 import AuthRoutes from "./modules/auth/routes/auth.routes";
-import BarberRoutes from "./modules/barberServices/routes/barber.routes";
+import BarberRoutes from "./modules/barber/routes/barber.routes";
+import BarberServices from "./modules/servicesBarber/routes/services.routes";
 
 import swaggerUi from "swagger-ui-express"; //swagger
 
@@ -25,6 +26,8 @@ import { any } from 'zod';
 app.use('/api/users', userRoutes);
 app.use('/api/auth', AuthRoutes);
 app.use('/api/barbers', BarberRoutes);
+app.use('/api/barber-services', BarberServices);
+
 
 
 //SwaggerDocs

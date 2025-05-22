@@ -1,5 +1,5 @@
 import { UserModel } from "../../user/models/User";
-import { IBarber } from "../interfaces/IBarber";
+import { IBarber } from "../interfaces/iBarber";
 import { IBarberRepository } from "../interfaces/IBarberRepository";
 
 
@@ -11,7 +11,8 @@ export class BarberRepository implements IBarberRepository {
     }
 
     async findAllBarbers(): Promise<IBarber[]> {
-        return await this.userModel.find({ role: 'barber' }).lean<IBarber[]>().exec();
+        return await this.userModel.find({ role: 'barber' })
+            .lean<IBarber[]>().exec();
     }
 
     async findAllBarbersActives(): Promise<IBarber[]> {

@@ -17,7 +17,11 @@ const options = {
         description: 'Endpoints related to authentication',
       },
       {
-        name: 'Barber',
+        name: 'Users',
+        description: 'Endpoints All to Users',
+      },
+      {
+        name: 'Barbers',
         description: 'Endpoints related to barbers',
       },
 
@@ -30,7 +34,15 @@ const options = {
       },
     ],
   },
-  apis: ['./src/modules/auth/routes/*.ts', './src/modules/user/routes/*.ts'], // Rutas de los módulos
+  apis: [
+
+    './src/modules/auth/routes/*.ts',
+    './src/modules/user/routes/*.ts',
+    './src/modules/barber/routes/*.ts',
+    './src/modules/servicesBarber/routes/*.ts'
+
+
+  ], // Rutas de los módulos
 };
 
 const specs = swaggerJsdoc(options);

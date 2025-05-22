@@ -26,6 +26,9 @@ export class CreateUserDto {
 
   // Factory method con validación
   static create(props: Partial<ICreateUserDto>): [string | null, CreateUserDto?] {
+    if (!props) {
+      return ['Data required'];
+    }
     const { name, lastName, email, password, role } = props;
 
     // Validaciones básicas
@@ -55,7 +58,7 @@ export class CreateUserDto {
         lastName.trim(),
         email.trim().toLowerCase(),
         password,
-        role || UserRole.CLIENT 
+        role || UserRole.CLIENT
       )
     ];
   }

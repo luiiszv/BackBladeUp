@@ -41,5 +41,8 @@ const userSchema = new Schema<IUser>({
     }
 });
 
+
+
+
 // Exporta el modelo
 export const UserModel = model<IUser>("User", userSchema);
