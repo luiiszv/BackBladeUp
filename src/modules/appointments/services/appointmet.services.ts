@@ -3,8 +3,20 @@ import { RepositoryAppointment } from "../repository/appointment.respository";
 import { IAppointment } from "../interfaces/IAppointment";
 import { BarberRepository } from "../../barber/repository/barber.repository";
 import { RepositoryBarber } from "../../servicesBarber/repository/services.respository";
-import { NotFoundError } from "../../../core/errors/NotFoundError";
 import { ICreateAppointmentDto } from "../dto/create-appointment.dto";
+import { AppointmentDto } from "../dto/appoinment.dto";
+
+//Errors
+import { NotFoundError } from "../../../core/errors/NotFoundError";
+import { ConflictError } from "../../../core/errors/ConflictError ";
+import { BadRequestError } from "../../../core/errors/BadRequestError";
+
+
+
+import { statusAppointment } from "../dto/create-appointment.dto";
+import mongoose from "mongoose";
+
+
 
 export class AppointmentServices {
 
@@ -30,9 +42,52 @@ export class AppointmentServices {
             throw new NotFoundError("service");
         }
 
+        const appoinmentPendingExist = await this.appointmentRepo.findStatusPendingByIdUser(clientId);
+        if (appoinmentPendingExist) {
+            throw new ConflictError("There's an appointment in pending status, cancel to create another one")
+        }
+
         const user = await this.appointmentRepo.create(completeData);
-        return user; 
+        return AppointmentDto.fromEntity(user);
     }
+
+    async findByStatusAndIdClient(status: statusAppointment, idUserAuth: string): Promise<IAppointment[]> {
+        return await this.appointmentRepo.findByStatusAndIdClient(status, idUserAuth);
+
+    }
+
+    async findByStatusAndIdBarber(status: statusAppointment, idUserAuth: string): Promise<IAppointment[]> {
+        return await this.appointmentRepo.findByStatusAndIdBarber(status, idUserAuth);
+
+    }
+
+    async updateAppointment(id: string, updateData: { status: statusAppointment }) {
+
+
+
+
+        if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+            throw new BadRequestError('Appointment ID is required or invalid format');
+        }
+
+
+
+
+        const appExist = await this.appointmentRepo.findById(id);
+        if (!appExist) {
+            throw new NotFoundError(`Appointment ${id} not found`);
+        }
+
+        const allowedStatuses = Object.values(statusAppointment);
+        if (!allowedStatuses.includes(updateData.status)) {
+            throw new BadRequestError('Invalid status or missing status');
+        }
+
+        const appointment = await this.appointmentRepo.update(id, { status: updateData.status });
+
+        return AppointmentDto.fromEntity(appointment);
+    }
+
 
 
 }

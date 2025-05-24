@@ -10,7 +10,6 @@ export enum statusAppointment {
 
 // Interface para validación estática
 export interface ICreateAppointmentDto {
-    client: string;
     barber: string;
     service: string;
     status?: statusAppointment;
@@ -19,7 +18,7 @@ export interface ICreateAppointmentDto {
 // Clase DTO con métodos de validación
 export class CreateAppointmentDto {
     private constructor(
-        public readonly client: string,
+  
         public readonly barber: string,
         public readonly service: string,
         public readonly status: statusAppointment
@@ -31,10 +30,10 @@ export class CreateAppointmentDto {
             return ['Data required'];
         }
 
-        const { client, barber, service, status } = props;
+        const { barber, service, status } = props;
 
         // Validaciones básicas
-        if (!client || !barber || !service) {
+        if (!barber || !service) {
             return ['Client, barber and service are required'];
         }
 
@@ -45,7 +44,6 @@ export class CreateAppointmentDto {
         return [
             null,
             new CreateAppointmentDto(
-                client.trim(),
                 barber.trim(),
                 service.trim(),
                 status || statusAppointment.PENDING

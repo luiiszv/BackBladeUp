@@ -39,7 +39,8 @@ const options = {
     './src/modules/auth/routes/*.ts',
     './src/modules/user/routes/*.ts',
     './src/modules/barber/routes/*.ts',
-    './src/modules/servicesBarber/routes/*.ts'
+    './src/modules/servicesBarber/routes/*.ts',
+    './src/modules/appointments/routes/*.ts'
 
 
   ], // Rutas de los módulos
