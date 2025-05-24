@@ -4,7 +4,7 @@ import { CreateUserDto } from '../dto/create-user.dto';
 import { UserModel } from '../models/User'; // Importa el modelo correctamente
 
 export class UserRepository implements IUserRepository {
-    constructor(private readonly userModel: typeof UserModel) {} // Usa typeof UserModel
+    constructor(private readonly userModel: typeof UserModel) {} 
 
     async create(user: CreateUserDto): Promise<IUser> {
         return await this.userModel.create(user);

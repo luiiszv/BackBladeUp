@@ -7,7 +7,7 @@ import userRoutes from './modules/user/routes/user.routes';  // Rutas del módul
 import AuthRoutes from "./modules/auth/routes/auth.routes";
 import BarberRoutes from "./modules/barber/routes/barber.routes";
 import BarberServices from "./modules/servicesBarber/routes/services.routes";
-
+import AppointmentRoutes from "./modules/appointments/routes/appointment.routes";
 import swaggerUi from "swagger-ui-express"; //swagger
 
 config();
@@ -27,6 +27,8 @@ app.use('/api/users', userRoutes);
 app.use('/api/auth', AuthRoutes);
 app.use('/api/barbers', BarberRoutes);
 app.use('/api/barber-services', BarberServices);
+app.use('/api/appointments', AppointmentRoutes);
+
 
 
 

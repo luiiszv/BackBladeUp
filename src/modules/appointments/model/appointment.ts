@@ -1,7 +1,7 @@
 // src/modules/appointment/models/Appointment.ts
 import { Schema, model, Types } from 'mongoose';
 import { IAppointment } from "../interfaces/IAppointment";
-const AppointmentSchema = new Schema<IAppointment>({
+const AppointmentSchema = new Schema({
 
   client: {
     type: Schema.Types.ObjectId,
@@ -22,6 +22,7 @@ const AppointmentSchema = new Schema<IAppointment>({
   date: {
     type: Date,
     required: true,
+    default: Date.now,
   },
   status: {
     type: String,
