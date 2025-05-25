@@ -9,6 +9,8 @@ import BarberRoutes from "./modules/barber/routes/barber.routes";
 import BarberServices from "./modules/servicesBarber/routes/services.routes";
 import AppointmentRoutes from "./modules/appointments/routes/appointment.routes";
 import swaggerUi from "swagger-ui-express"; //swagger
+import morgan from 'morgan';
+import cors from 'cors';
 
 config();
 
@@ -17,6 +19,16 @@ const app: Application = express();
 // Middlewares generales
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+//Morgan
+app.use(morgan('dev'));
+
+//Cors
+app.use(cors({
+  origin: 'http://localhost:5173',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 //spects swagger
 import specs from "./config/swagger-config";
@@ -29,11 +41,9 @@ app.use('/api/barbers', BarberRoutes);
 app.use('/api/barber-services', BarberServices);
 app.use('/api/appointments', AppointmentRoutes);
 
-
-
-
 //SwaggerDocs
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
+
 
 
 app.get("/", (req, res) => {
