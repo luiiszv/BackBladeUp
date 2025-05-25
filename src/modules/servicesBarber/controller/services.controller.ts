@@ -72,6 +72,24 @@ export class ServicesBarberController {
     }
 
 
+    findAll = async (req: Request, res: Response, next: NextFunction) => {
+
+        try {
+
+            const response = await this.servicesBarber.findAll();
+            res.status(200).json(response);
+
+        } catch (error) {
+
+            next()
+
+        }
+
+    }
+
+
+
+
 
 
 }

@@ -60,5 +60,12 @@ export class ServiceBarber {
     }
 
 
+    async findAll(): Promise<IServiceResponse[]> {
+
+        return await this.repositoryServiceBarber.findAll();
+
+    }
+
+
 
 }

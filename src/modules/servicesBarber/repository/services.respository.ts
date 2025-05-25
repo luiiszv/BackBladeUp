@@ -18,6 +18,12 @@ export class RepositoryBarber {
 
     }
 
+    async findAll(): Promise<IServiceResponse[]> {
+
+        return await this.serviceModel.find();
+
+    }
+
 
     async findServiceById(_id: string): Promise<IServiceResponse | null> {
         return await this.serviceModel.findById(_id);

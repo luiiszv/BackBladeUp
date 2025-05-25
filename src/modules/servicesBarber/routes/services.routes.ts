@@ -187,5 +187,50 @@ router.get('/barber/:id', verifyTokenMiddleware, controllerServiceBarber.findBar
 
 
 
+/**
+ * @swagger
+ * /api/barber-services:
+ *   get:
+ *     summary: Obtener todos los servicios ofrecidos por los barberos
+ *     tags:
+ *       - BarberServices
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de servicios encontrada exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                     example: "66345e9a7c3c6a001fe9a123"
+ *                   name:
+ *                     type: string
+ *                     example: "Corte Clásico"
+ *                   description:
+ *                     type: string
+ *                     example: "Corte con máquina y tijera"
+ *                   price:
+ *                     type: number
+ *                     example: 20000
+ *                   barber:
+ *                     type: object
+ *                     description: Objeto que representa al barbero (puede incluir id, nombre, etc.)
+ *                     example:
+ *                       _id: "66345e9a7c3c6a001fe9a456"
+ *                       name: "Juan Pérez"
+ *       401:
+ *         description: No autorizado - token inválido o ausente
+ *       500:
+ *         description: Error interno del servidor
+ */
+
+router.get('/', verifyTokenMiddleware, controllerServiceBarber.findAll);
+
 
 export default router;
