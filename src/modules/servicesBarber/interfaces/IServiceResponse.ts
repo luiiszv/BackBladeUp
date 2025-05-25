@@ -18,4 +18,5 @@ export interface IServiceResponse extends Document {
     description?: string;
     price: number;
     barber: IBarberResponse;
+    imageUrl: string;
 }

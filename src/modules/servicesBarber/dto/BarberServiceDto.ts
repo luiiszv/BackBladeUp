@@ -6,6 +6,7 @@ export class BarberServiceDto {
         public readonly name: string,
         public readonly price: Number,
         public readonly barber: string,
+        public readonly imageUrl: string,
 
     ) { }
 
@@ -13,7 +14,8 @@ export class BarberServiceDto {
         return new BarberServiceDto(
             barberService.name,
             barberService.price,
-            barberService.barber
+            barberService.barber,
+            barberService.imageUrl
         );
     }
 }

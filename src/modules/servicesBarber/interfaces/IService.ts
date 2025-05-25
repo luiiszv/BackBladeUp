@@ -5,4 +5,5 @@ export interface IService extends Document {
     description?: string;
     price: number;
     barber: object;
+    imageUrl?: string
 }

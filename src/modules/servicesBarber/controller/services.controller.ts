@@ -8,7 +8,6 @@ import admin from "../../../config/firebase";
 export class ServicesBarberController {
     constructor(private servicesBarber: ServiceBarber) { }
 
-
     create = async (req: Request, res: Response, next: NextFunction) => {
         const barberId = req.user!.userId;
 
@@ -19,34 +18,30 @@ export class ServicesBarberController {
                 description: req.body.description,
             };
 
-            if (req.file) {
-                // Aquí va la lógica para subir a Firebase Storage
-                const filename = `services/${Date.now()}-${req.file.originalname}`;
-                const bucket = admin.storage().bucket();
-                const file = bucket.file(filename);
-
-                await file.save(req.file.buffer, {
-                    metadata: { contentType: req.file.mimetype },
-                    public: true,
-                });
-
-                // URL pública
-                const publicUrl = `https://storage.googleapis.com/${bucket.name}/${filename}`;
-                props.imageUrl = publicUrl;
-            }
-
-            console.log(props);
-
             const [error, createServiceDto] = CreateServiceDto.create(props);
 
             if (error) {
                 return next(new HttpError(error, 400));
             }
 
-            const response = await this.servicesBarber.create(barberId, createServiceDto!);
+            console.log(createServiceDto)
+
+
+
+            const response = await this.servicesBarber.create(barberId, props as ICreateServiceDto, req.file);
             res.status(201).json(response);
 
         } catch (error) {
+            if (error instanceof Error) {
+                // Manejo específico para errores de Firebase Storage
+                if ('code' in error && error.code === 403) {
+                    return next(new HttpError('Permission denied on storage bucket', 403));
+                }
+                // Manejo para archivos demasiado grandes
+                if ('code' in error && error.code === 'ENTITY_TOO_LARGE') {
+                    return next(new HttpError('File size exceeds limit', 413));
+                }
+            }
             next(error);
         }
     }
@@ -55,7 +50,7 @@ export class ServicesBarberController {
         const idService = req.params.id;
         try {
 
-            const response = await this.servicesBarber.update(idService, req.body);
+            const response = await this.servicesBarber.update(idService, req.body, req.file);
             res.status(200).json(response);
 
         } catch (error) {

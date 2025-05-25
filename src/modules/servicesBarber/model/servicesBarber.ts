@@ -22,6 +22,12 @@ const ServiceSchema = new Schema<IService>({
         ref: 'User',
         required: true,
     },
+    imageUrl: {
+        type: String,
+        required: false,
+     
+
+    },
 });
 
 export const ServiceModel = model<IService>('Service', ServiceSchema);

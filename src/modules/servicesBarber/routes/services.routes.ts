@@ -5,16 +5,15 @@ import { ServiceBarber } from "../services/service.service";
 import { RepositoryBarber as RepositoryServicesBarber } from "../repository/services.respository";
 import { verifyTokenMiddleware } from "../../../core/middleware/verifyTokenMiddleware";
 import { verifyRole } from "../../../core/middleware/verifyRole";
+import { FirebaseStorageService } from "../../../utils/firebaseStorage";
+import { uploadServiceImage } from "../../../config/multer";
 
 const router = Router();
 
 const repositoryBarberRepo = new RepositoryServicesBarber(ServiceModel);
-const servicesBarberServices = new ServiceBarber(repositoryBarberRepo);
+const storageService = new FirebaseStorageService();
+const servicesBarberServices = new ServiceBarber(repositoryBarberRepo, storageService);
 const controllerServiceBarber = new ServicesBarberController(servicesBarberServices);
-
-
-//multer
-import { uploadServiceImage } from "../../../config/multer";
 
 /**
  * @swagger
@@ -38,22 +37,19 @@ import { uploadServiceImage } from "../../../config/multer";
  *       properties:
  *         _id:
  *           type: string
- *           example: "682f8a679f8923b706c2dd71"
  *         name:
  *           type: string
- *           example: "Corte muchacho loco"
  *         description:
  *           type: string
- *           example: "Corte especial, de la casa"
  *         price:
  *           type: number
- *           example: 25000
  *         barber:
  *           type: string
- *           example: "682a5ca83f96fc96570fd5f7"
+ *         imageUrl:
+ *           type: string
+ *           description: URL de la imagen del servicio
  *         __v:
  *           type: number
- *           example: 0
  */
 
 /**
@@ -67,7 +63,7 @@ import { uploadServiceImage } from "../../../config/multer";
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
@@ -76,13 +72,14 @@ import { uploadServiceImage } from "../../../config/multer";
  *             properties:
  *               name:
  *                 type: string
- *                 example: "Corte básico"
  *               price:
  *                 type: number
- *                 example: 20000
  *               description:
  *                 type: string
- *                 example: "Corte con tijera y máquina"
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: Imagen del servicio (opcional)
  *     responses:
  *       201:
  *         description: Servicio creado exitosamente
@@ -95,12 +92,18 @@ import { uploadServiceImage } from "../../../config/multer";
  *       403:
  *         description: Acceso denegado
  */
-router.post('/', verifyTokenMiddleware, verifyRole("barber"), uploadServiceImage.single("image"), controllerServiceBarber.create);
+router.post(
+  "/",
+  verifyTokenMiddleware,
+  verifyRole("barber"),
+  uploadServiceImage.single("image"),
+  controllerServiceBarber.create
+);
 
 /**
  * @swagger
  * /api/barber-services/update/{id}:
- *   get:
+ *   put:
  *     summary: Actualizar un servicio por ID
  *     tags: [BarberServices]
  *     security:
@@ -109,25 +112,49 @@ router.post('/', verifyTokenMiddleware, verifyRole("barber"), uploadServiceImage
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID del servicio a actualizar
+ *         description: ID del servicio
  *         schema:
  *           type: string
- *           example: "682f8a679f8923b706c2dd71"
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               price:
+ *                 type: number
+ *               description:
+ *                 type: string
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: Imagen del servicio (opcional)
  *     responses:
  *       200:
- *         description: Servicio encontrado y listo para actualización
+ *         description: Servicio actualizado exitosamente
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Service'
- *       404:
- *         description: Servicio no encontrado
+ *       400:
+ *         description: Datos inválidos
  *       401:
  *         description: No autorizado
  *       403:
  *         description: Acceso denegado
+ *       404:
+ *         description: Servicio no encontrado
  */
-router.put('/update/:id', verifyTokenMiddleware, verifyRole("barber"), controllerServiceBarber.update);
+router.put(
+  "/update/:id",
+  verifyTokenMiddleware,
+  verifyRole("barber"),
+  uploadServiceImage.single("image"),
+  controllerServiceBarber.update
+);
 
 /**
  * @swagger
@@ -149,10 +176,14 @@ router.put('/update/:id', verifyTokenMiddleware, verifyRole("barber"), controlle
  *       401:
  *         description: No autorizado
  *       403:
- *         description: Acceso denegado (solo barberos)
+ *         description: Acceso denegado
  */
-router.get('/me', verifyTokenMiddleware, verifyRole("barber"), controllerServiceBarber.findBarberServicesByBarberAuth); //Aqui me por barbero se ve en el verifyRole
-
+router.get(
+  "/me",
+  verifyTokenMiddleware,
+  verifyRole("barber"),
+  controllerServiceBarber.findBarberServicesByBarberAuth
+);
 
 /**
  * @swagger
@@ -166,13 +197,12 @@ router.get('/me', verifyTokenMiddleware, verifyRole("barber"), controllerService
  *       - name: id
  *         in: path
  *         required: true
- *         description: ID del barbero a consultar
+ *         description: ID del barbero
  *         schema:
  *           type: string
- *           example: 682a5ca83f96fc96570fd5f7
  *     responses:
  *       200:
- *         description: Lista de servicios del barbero especificado
+ *         description: Lista de servicios del barbero
  *         content:
  *           application/json:
  *             schema:
@@ -182,59 +212,38 @@ router.get('/me', verifyTokenMiddleware, verifyRole("barber"), controllerService
  *       401:
  *         description: No autorizado
  *       404:
- *         description: Barbero no encontrado o sin servicios
- *       500:
- *         description: Error interno del servidor
+ *         description: Barbero no encontrado
  */
-
-router.get('/barber/:id', verifyTokenMiddleware, controllerServiceBarber.findBarberServicesByBarberId); //Aqui trae los servicion que el usurio le enviae por parametro 
-
-
+router.get(
+  "/barber/:id",
+  verifyTokenMiddleware,
+  controllerServiceBarber.findBarberServicesByBarberId
+);
 
 /**
  * @swagger
  * /api/barber-services:
  *   get:
  *     summary: Obtener todos los servicios ofrecidos por los barberos
- *     tags:
- *       - BarberServices
+ *     tags: [BarberServices]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Lista de servicios encontrada exitosamente
+ *         description: Lista de servicios
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
- *                 type: object
- *                 properties:
- *                   _id:
- *                     type: string
- *                     example: "66345e9a7c3c6a001fe9a123"
- *                   name:
- *                     type: string
- *                     example: "Corte Clásico"
- *                   description:
- *                     type: string
- *                     example: "Corte con máquina y tijera"
- *                   price:
- *                     type: number
- *                     example: 20000
- *                   barber:
- *                     type: object
- *                     description: Objeto que representa al barbero (puede incluir id, nombre, etc.)
- *                     example:
- *                       _id: "66345e9a7c3c6a001fe9a456"
- *                       name: "Juan Pérez"
+ *                 $ref: '#/components/schemas/Service'
  *       401:
- *         description: No autorizado - token inválido o ausente
- *       500:
- *         description: Error interno del servidor
+ *         description: No autorizado
  */
-
-router.get('/', verifyTokenMiddleware, controllerServiceBarber.findAll);
-
+router.get(
+  "/",
+  verifyTokenMiddleware,
+  controllerServiceBarber.findAll
+);
 
 export default router;
