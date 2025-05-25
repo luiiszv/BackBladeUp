@@ -18,9 +18,12 @@ export class RepositoryBarber {
 
     }
 
-    async findAll(): Promise<IServiceResponse[]> {
+    async findAll(): Promise<object[]> {
 
-        return await this.serviceModel.find();
+        return await this.serviceModel.find().populate({
+            path: 'barber',
+            select: "-password"
+        });
 
     }
 
@@ -33,8 +36,8 @@ export class RepositoryBarber {
 
 
     //Busca los servicios por el nombre pero del mismo user barber
-    async findServicesByNameAndBarber(barberId: string, name: string): Promise<IServiceResponse | null> {
-        return await this.serviceModel.findOne({ barber: barberId, name });
+    async findServicesByNameAndBarber(barber: string, name: string): Promise<object | null> {
+        return await this.serviceModel.findOne({ barber: barber, name }).populate('barber');
 
 
     }
