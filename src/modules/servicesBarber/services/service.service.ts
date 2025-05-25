@@ -60,7 +60,7 @@ export class ServiceBarber {
     }
 
 
-    async findAll(): Promise<IServiceResponse[]> {
+    async findAll(): Promise<object[]> {
 
         return await this.repositoryServiceBarber.findAll();
 
