@@ -47,8 +47,14 @@ export class AppointmentServices {
             throw new ConflictError("There's an appointment in pending status, cancel to create another one")
         }
 
-        const user = await this.appointmentRepo.create(completeData);
-        return AppointmentDto.fromEntity(user);
+        const createdAppointment = await this.appointmentRepo.create(completeData);
+        if (!createdAppointment) {
+            throw new ConflictError("There's an error")
+        }
+   
+
+        const populatedAppointment = await this.appointmentRepo.findByIdPopulate(String(createdAppointment._id))
+        return populatedAppointment
     }
 
     async findByStatusAndIdClient(status: statusAppointment, idUserAuth: string): Promise<IAppointment[]> {

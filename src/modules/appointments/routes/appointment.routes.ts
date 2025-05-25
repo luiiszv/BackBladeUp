@@ -53,15 +53,92 @@ import { verifyRole } from "../../../core/middleware/verifyRole";
  */
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     CreateAppointmentDto:
+ *       type: object
+ *       description: Datos necesarios para crear una cita (solo id del barbero y del servicio)
+ *       properties:
+ *         barber:
+ *           type: string
+ *           description: ID del barbero
+ *           example: "682a5ca83f96fc96570fd5f7"
+ *         service:
+ *           type: string
+ *           description: ID del servicio solicitado
+ *           example: "682f8a679f8923b706c2dd71"
+ *       required:
+ *         - barber
+ *         - service
+ *
+ *     AppointmentDto:
+ *       type: object
+ *       description: Datos generales de una cita registrada
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: "68337c631dd8fc2a82a61df4"
+ *         client:
+ *           type: object
+ *           properties:
+ *             _id: { type: string, example: "682f801c439ee2598d722b56" }
+ *             name: { type: string, example: "luis" }
+ *             lastName: { type: string, example: "Barber" }
+ *             email: { type: string, example: "client@gmail.com" }
+ *             role: { type: string, example: "client" }
+ *             isBarberActive: { type: boolean, example: false }
+ *             active: { type: boolean, example: true }
+ *             creationDate: { type: string, format: date-time }
+ *         barber:
+ *           type: object
+ *           properties:
+ *             _id: { type: string, example: "682a5ca83f96fc96570fd5f7" }
+ *             name: { type: string, example: "luis" }
+ *             lastName: { type: string, example: "Barber" }
+ *             email: { type: string, example: "barber@gmail.com" }
+ *             role: { type: string, example: "barber" }
+ *             isBarberActive: { type: boolean, example: true }
+ *             active: { type: boolean, example: true }
+ *             creationDate: { type: string, format: date-time }
+ *         service:
+ *           type: object
+ *           properties:
+ *             _id: { type: string, example: "682f8a679f8923b706c2dd71" }
+ *             name: { type: string, example: "Corte muchacho loco" }
+ *             description: { type: string, example: "Corte especial, de la casa" }
+ *             price: { type: number, example: 2000 }
+ *             barber: { type: string, example: "682a5ca83f96fc96570fd5f7" }
+ *         status:
+ *           type: string
+ *           example: "pending"
+ *         date:
+ *           type: string
+ *           format: date-time
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *
+ *     ErrorResponse:
+ *       type: object
+ *       properties:
+ *         error:
+ *           type: string
+ *           example: "There's an appointment in pending status, cancel to create another one"
+ */
+
+/**
+ * @swagger
  * /api/appointments:
  *   post:
  *     tags:
  *       - Appointments
- *     summary: Create a new appointment
+ *     summary: Crea una nueva Cita
  *     description: >
- *       Crea una nueva cita  (Solo el Cliente lo hace).  
- *       Valida que el Barbero y el servicio exista,  
- *       y que el cliente no tenga citas pendientes si sabe.
+ *       Crea una nueva cita (solo el cliente lo puede hacer).  
+ *       Valida que el barbero y el servicio existan,  
+ *       que el cliente no tenga citas pendientes.
+ *       Solo se deben enviar los IDs del barbero y del servicio.  
+ *       El ID del cliente se obtiene automáticamente desde el token de autenticación.
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -71,11 +148,10 @@ import { verifyRole } from "../../../core/middleware/verifyRole";
  *           schema:
  *             $ref: '#/components/schemas/CreateAppointmentDto'
  *           example:
- *             barber: "642e5f4e7f1c2a3b4c5d6e7f"
- *             service: "642e5f8a7f1c2a3b4c5d6e80"
- *             status: "pending"
+ *             barber: "682a5ca83f96fc96570fd5f7"
+ *             service: "682f8a679f8923b706c2dd71"
  *     responses:
- *       '200':
+ *       '201':
  *         description: Appointment created successfully
  *         content:
  *           application/json:
@@ -88,7 +164,7 @@ import { verifyRole } from "../../../core/middleware/verifyRole";
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       '404':
- *         description: Barber or Service not found
+ *         description: Barber or service not found
  *         content:
  *           application/json:
  *             schema:

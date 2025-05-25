@@ -12,6 +12,10 @@ const repositoryBarberRepo = new RepositoryServicesBarber(ServiceModel);
 const servicesBarberServices = new ServiceBarber(repositoryBarberRepo);
 const controllerServiceBarber = new ServicesBarberController(servicesBarberServices);
 
+
+//multer
+import { uploadServiceImage } from "../../../config/multer";
+
 /**
  * @swagger
  * tags:
@@ -91,7 +95,7 @@ const controllerServiceBarber = new ServicesBarberController(servicesBarberServi
  *       403:
  *         description: Acceso denegado
  */
-router.post('/', verifyTokenMiddleware, verifyRole("barber"), controllerServiceBarber.create);
+router.post('/', verifyTokenMiddleware, verifyRole("barber"), uploadServiceImage.single("image"), controllerServiceBarber.create);
 
 /**
  * @swagger

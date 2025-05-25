@@ -19,6 +19,13 @@ export class RepositoryAppointment implements IAppointmentRepository {
         return appointment ? (appointment.toObject ? appointment.toObject() : appointment) : null;
     }
 
+    async findByIdPopulate(id: string): Promise<object | null> {
+        const appointment = await this.appointRepo.findById(id).populate('client').populate('barber').populate('service');
+        return appointment ? (appointment.toObject ? appointment.toObject() : appointment) : null;
+    }
+
+
+
     async findAll(): Promise<IAppointment[]> {
         const appointments = await this.appointRepo.find();
         return appointments.map(a => (a.toObject ? a.toObject() : a));
