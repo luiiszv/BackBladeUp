@@ -37,7 +37,7 @@ export class RepositoryBarber {
 
     //Busca los servicios por el nombre pero del mismo user barber
     async findServicesByNameAndBarber(barber: string, name: string): Promise<object | null> {
-        return await this.serviceModel.findOne({ barber: barber, name }).populate('barber');
+        return await this.serviceModel.findOne({ barber: barber, name });
 
 
     }
