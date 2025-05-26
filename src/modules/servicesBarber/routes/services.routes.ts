@@ -249,7 +249,7 @@ router.get(
 /**
  * @swagger
  * /api/barber-services/category/{category}:
- *   delete:
+ *   get:
  *     summary: Obtener servicios filtrados por categoría
  *     tags: [BarberServices]
  *     security:
@@ -289,7 +289,7 @@ router.get(
 /**
  * @swagger
  * /api/barber-services/delete/{id}:
- *   get:
+ *   delete:
  *     summary: Eliminar un servicio por ID
  *     tags: [BarberServices]
  *     security:
