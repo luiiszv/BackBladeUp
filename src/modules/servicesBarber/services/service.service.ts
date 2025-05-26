@@ -57,8 +57,6 @@ export class ServiceBarber {
             throw new NotFoundError('Service not found.');
         }
 
-
-
         // Si va a cambiar el nombre, asegurarse que no exista otro igual para ese barbero
         if (updates.name && updates.name !== service.name) {
             const existing = await this.repositoryServiceBarber.findServicesByNameAndBarber(String(service.barber), updates.name);
