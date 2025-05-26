@@ -51,7 +51,7 @@ export class AppointmentServices {
         if (!createdAppointment) {
             throw new ConflictError("There's an error")
         }
-   
+
 
         const populatedAppointment = await this.appointmentRepo.findByIdPopulate(String(createdAppointment._id))
         return populatedAppointment
@@ -66,6 +66,21 @@ export class AppointmentServices {
         return await this.appointmentRepo.findByStatusAndIdBarber(status, idUserAuth);
 
     }
+
+    async findAllByIdBarber(idUserAuth: string): Promise<object[]> {
+        return await this.appointmentRepo.findAllByIdBarber(idUserAuth);
+
+    }
+    async findAllByIdClient(idUserAuth: string): Promise<object[]> {
+        return await this.appointmentRepo.findAllByIdClient(idUserAuth);
+
+    }
+
+    async findAll(): Promise<object[]> {
+        return await this.appointmentRepo.findAll();
+
+    }
+
 
     async updateAppointment(id: string, updateData: { status: statusAppointment }) {
 

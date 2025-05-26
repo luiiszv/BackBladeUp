@@ -292,4 +292,181 @@ router.get("/client=pending", verifyTokenMiddleware, verifyRole("client"), appoi
 router.put("/update/:id", verifyTokenMiddleware, appoinmentController.updateApp);
 
 
+/**
+ * @swagger
+ * /api/appointments:
+ *   get:
+ *     summary: Obtener todas las citas
+ *     description: Retorna una lista de todas las citas con información del cliente, barbero y servicio.
+ *     tags:
+ *       - Appointments
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de citas encontrada exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                   client:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                       name:
+ *                         type: string
+ *                       lastName:
+ *                         type: string
+ *                       email:
+ *                         type: string
+ *                       role:
+ *                         type: string
+ *                         enum: [client]
+ *                       isBarberActive:
+ *                         type: boolean
+ *                       active:
+ *                         type: boolean
+ *                       creationDate:
+ *                         type: string
+ *                         format: date-time
+ *                   barber:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                       name:
+ *                         type: string
+ *                       lastName:
+ *                         type: string
+ *                       email:
+ *                         type: string
+ *                       role:
+ *                         type: string
+ *                         enum: [barber]
+ *                       isBarberActive:
+ *                         type: boolean
+ *                       active:
+ *                         type: boolean
+ *                       creationDate:
+ *                         type: string
+ *                         format: date-time
+ *                   service:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                       name:
+ *                         type: string
+ *                       description:
+ *                         type: string
+ *                       category:
+ *                         type: string
+ *                       price:
+ *                         type: number
+ *                       barber:
+ *                         type: string
+ *                       imageUrl:
+ *                         type: string
+ *                   status:
+ *                     type: string
+ *                     enum: [pending, accepted, cancelled, completed]
+ *                   date:
+ *                     type: string
+ *                     format: date-time
+ *                   createdAt:
+ *                     type: string
+ *                     format: date-time
+ */
+router.get("/", verifyTokenMiddleware, appoinmentController.findAll);
+
+
+/**
+ * @swagger
+ * /api/appointments/barber/{id}:
+ *   get:
+ *     tags:
+ *       - Appointments
+ *     summary: Obtener todas las citas de un barbero por su ID
+ *     description: Retorna todas las citas asociadas al barbero cuyo ID se pasa por parámetro.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: ID del barbero (formato ObjectId de MongoDB)
+ *         schema:
+ *           type: string
+ *           example: 682a5ca83f96fc96570fd5f7
+ *     responses:
+ *       200:
+ *         description: Lista de citas del barbero encontrada exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/AppointmentDto'
+ *       401:
+ *         description: No autorizado
+ *       404:
+ *         description: Barbero no encontrado o sin citas
+ */
+router.get("/barber/:id", verifyTokenMiddleware, appoinmentController.findAllByParamsIdBarber);
+
+
+/**
+ * @swagger
+ * /api/appointments/barber-auth:
+ *   get:
+ *     tags:
+ *       - Appointments
+ *     summary: Obtener todas las citas del barbero autenticado
+ *     description: Retorna todas las citas asociadas al barbero autenticado (requiere autenticación).
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de citas del barbero autenticado encontrada exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/AppointmentDto'
+ *       401:
+ *         description: No autorizado
+ */
+router.get("/barber-auth", verifyTokenMiddleware, appoinmentController.findAllByIdBarber);
+
+/**
+ * @swagger
+ * /api/appointments/client-auth:
+ *   get:
+ *     tags:
+ *       - Appointments
+ *     summary: Obtener todas las citas del cliente autenticado
+ *     description: Retorna todas las citas asociadas al cliente autenticado (requiere autenticación).
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de citas del cliente autenticado encontrada exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/AppointmentDto'
+ *       401:
+ *         description: No autorizado
+ */
+router.get("/client-auth", verifyTokenMiddleware, appoinmentController.findAllByIdClient);
+
 export default router;

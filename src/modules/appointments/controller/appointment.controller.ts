@@ -76,6 +76,48 @@ export class AppointmentController {
         }
     };
 
+    findAll = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+
+            const response = await this.appointmentServ.findAll();
+            res.status(200).json(response);
+        } catch (err) {
+            next(err);
+        }
+    };
+
+
+    findAllByIdClient = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const idUser = req.user?.userId
+            const response = await this.appointmentServ.findAllByIdClient(String(idUser));
+            res.status(200).json(response);
+        } catch (err) {
+            next(err);
+        }
+    };
+
+    findAllByIdBarber = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const idUser = req.user?.userId
+            const response = await this.appointmentServ.findAllByIdBarber(String(idUser));
+            res.status(200).json(response);
+        } catch (err) {
+            next(err);
+        }
+    };
+
+
+    findAllByParamsIdBarber = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const idUser = req.params.id;
+            const response = await this.appointmentServ.findAllByIdBarber(String(idUser));
+            res.status(200).json(response);
+        } catch (err) {
+            next(err);
+        }
+    };
+
 
 
 

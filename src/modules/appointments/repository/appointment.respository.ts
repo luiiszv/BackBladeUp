@@ -26,8 +26,11 @@ export class RepositoryAppointment implements IAppointmentRepository {
 
 
 
-    async findAll(): Promise<IAppointment[]> {
-        const appointments = await this.appointRepo.find();
+    async findAll(): Promise<object[]> {
+        const appointments = await this.appointRepo.find()
+            .populate({ path: 'client', select: '-password' })
+            .populate({ path: 'barber', select: '-password' })
+            .populate('service');
         return appointments.map(a => (a.toObject ? a.toObject() : a));
     }
 
@@ -45,6 +48,24 @@ export class RepositoryAppointment implements IAppointmentRepository {
 
     async findByStatusAndIdBarber(status: statusAppointment, idUserAuth: string): Promise<object[]> {
         const appointments = await this.appointRepo.find({ status, barber: idUserAuth })
+            .populate({ path: 'client', select: '-password' })
+            .populate({ path: 'barber', select: '-password' })
+            .populate('service');
+
+        return appointments.map(a => (a.toObject ? a.toObject() : a));
+    }
+
+    async findAllByIdBarber(idUserAuth: string): Promise<object[]> {
+        const appointments = await this.appointRepo.find({ barber: idUserAuth })
+            .populate({ path: 'client', select: '-password' })
+            .populate({ path: 'barber', select: '-password' })
+            .populate('service');
+
+        return appointments.map(a => (a.toObject ? a.toObject() : a));
+    }
+
+    async findAllByIdClient(idUserAuth: string): Promise<object[]> {
+        const appointments = await this.appointRepo.find({ client: idUserAuth })
             .populate({ path: 'client', select: '-password' })
             .populate({ path: 'barber', select: '-password' })
             .populate('service');
