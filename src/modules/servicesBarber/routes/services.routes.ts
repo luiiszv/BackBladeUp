@@ -249,7 +249,7 @@ router.get(
 /**
  * @swagger
  * /api/barber-services/category/{category}:
- *   get:
+ *   delete:
  *     summary: Obtener servicios filtrados por categoría
  *     tags: [BarberServices]
  *     security:
