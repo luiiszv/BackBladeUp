@@ -6,7 +6,7 @@ import { ServiceCategory } from "../dto/BarberServiceDto";
 
 
 import { CreateServiceDto } from "../interfaces/create-service.dto";
-import { securityRules } from "firebase-admin";
+
 
 
 export class RepositoryBarber {
