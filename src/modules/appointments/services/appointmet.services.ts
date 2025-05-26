@@ -42,10 +42,10 @@ export class AppointmentServices {
             throw new NotFoundError("service");
         }
 
-        const appoinmentPendingExist = await this.appointmentRepo.findStatusPendingByIdUser(clientId);
-        if (appoinmentPendingExist) {
-            throw new ConflictError("There's an appointment in pending status, cancel to create another one")
-        }
+        // const appoinmentPendingExist = await this.appointmentRepo.findStatusPendingByIdUser(clientId);
+        // if (appoinmentPendingExist) {
+        //     throw new ConflictError("There's an appointment in pending status, cancel to create another one")
+        // }
 
         const createdAppointment = await this.appointmentRepo.create(completeData);
         if (!createdAppointment) {
