@@ -57,12 +57,12 @@ export class AppointmentServices {
         return populatedAppointment
     }
 
-    async findByStatusAndIdClient(status: statusAppointment, idUserAuth: string): Promise<IAppointment[]> {
+    async findByStatusAndIdClient(status: statusAppointment, idUserAuth: string): Promise<object[]> {
         return await this.appointmentRepo.findByStatusAndIdClient(status, idUserAuth);
 
     }
 
-    async findByStatusAndIdBarber(status: statusAppointment, idUserAuth: string): Promise<IAppointment[]> {
+    async findByStatusAndIdBarber(status: statusAppointment, idUserAuth: string): Promise<object[]> {
         return await this.appointmentRepo.findByStatusAndIdBarber(status, idUserAuth);
 
     }

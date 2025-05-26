@@ -31,22 +31,39 @@ export class RepositoryAppointment implements IAppointmentRepository {
         return appointments.map(a => (a.toObject ? a.toObject() : a));
     }
 
-    async findByStatusAndIdClient(status: statusAppointment, idUserAuth: string): Promise<IAppointment[]> {
-        const appointments = await this.appointRepo.find({ status, client: idUserAuth });
+    async findByStatusAndIdClient(status: statusAppointment, idUserAuth: string): Promise<object[]> {
+        const appointments = await this.appointRepo.find({ status, client: idUserAuth })
+            .populate({ path: 'client', select: '-password' })
+            .populate({ path: 'barber', select: '-password' })
+            .populate('service');
+
         return appointments.map(a => (a.toObject ? a.toObject() : a));
     }
 
-    async findByStatusAndIdBarber(status: statusAppointment, idUserAuth: string): Promise<IAppointment[]> {
-        const appointments = await this.appointRepo.find({ status, barber: idUserAuth });
+
+
+
+    async findByStatusAndIdBarber(status: statusAppointment, idUserAuth: string): Promise<object[]> {
+        const appointments = await this.appointRepo.find({ status, barber: idUserAuth })
+            .populate({ path: 'client', select: '-password' })
+            .populate({ path: 'barber', select: '-password' })
+            .populate('service');
+
         return appointments.map(a => (a.toObject ? a.toObject() : a));
     }
 
 
 
-    async findStatusPendingByIdUser(idClient: string): Promise<IAppointment | null> {
-        const appointment = await this.appointRepo.findOne({ status: 'pending', client: idClient });
-        return appointment;
+
+    async findStatusPendingByIdUser(idClient: string): Promise<object | null> {
+        const appointment = await this.appointRepo.findOne({ status: 'pending', client: idClient })
+            .populate({ path: 'client', select: '-password' })
+            .populate({ path: 'barber', select: '-password' })
+            .populate('service');
+
+        return appointment ? (appointment.toObject ? appointment.toObject() : appointment) : null;
     }
+
 
     async update(id: string, update: Partial<IAppointment>): Promise<IAppointment | null> {
         const updated = await this.appointRepo.findByIdAndUpdate(id, update, { new: true });
