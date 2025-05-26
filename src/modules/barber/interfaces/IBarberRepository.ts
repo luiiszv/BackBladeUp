@@ -1,4 +1,4 @@
-import { IBarber } from "./IBarber";
+import { IBarber } from "./iBarber";
 
 
 export interface IBarberRepository {
