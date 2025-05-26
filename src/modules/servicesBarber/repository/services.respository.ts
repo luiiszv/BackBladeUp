@@ -2,10 +2,11 @@ import { ServiceModel } from "../model/servicesBarber";
 import { IService } from "../interfaces/IService";
 import { Types } from 'mongoose';
 import { IServiceResponse } from "../interfaces/IServiceResponse";
-
+import { ServiceCategory } from "../dto/BarberServiceDto";
 
 
 import { CreateServiceDto } from "../interfaces/create-service.dto";
+import { securityRules } from "firebase-admin";
 
 
 export class RepositoryBarber {
@@ -26,6 +27,18 @@ export class RepositoryBarber {
         });
 
     }
+
+    async findByCategory(category: ServiceCategory): Promise<object[]> {
+
+        return await this.serviceModel.find({
+            category
+        }).populate({
+            path: 'barber',
+            select: "-password"
+        });
+
+    }
+
 
 
     async findServiceById(_id: string): Promise<IServiceResponse | null> {

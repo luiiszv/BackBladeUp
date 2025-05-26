@@ -22,10 +22,16 @@ const ServiceSchema = new Schema<IService>({
         ref: 'User',
         required: true,
     },
+    category: {
+        type: String,
+        required: false,
+        enum: ['Corte clásico', 'Fade', 'Diseño', 'Barba', 'Color', 'Tratamiento', 'Otro'],
+        default: 'Otro'
+    },
     imageUrl: {
         type: String,
         required: false,
-     
+
 
     },
 });

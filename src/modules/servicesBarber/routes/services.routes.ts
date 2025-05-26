@@ -246,4 +246,42 @@ router.get(
   controllerServiceBarber.findAll
 );
 
+/**
+ * @swagger
+ * /api/barber-services/category/{category}:
+ *   get:
+ *     summary: Obtener servicios filtrados por categoría
+ *     tags: [BarberServices]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: category
+ *         schema:
+ *           type: string
+ *           enum: ['Corte clásico', 'Fade', 'Diseño', 'Barba', 'Color', 'Tratamiento', 'Otro']
+ *         required: true
+ *         description: Categoría del servicio a filtrar
+ *     responses:
+ *       200:
+ *         description: Lista de servicios filtrados por categoría
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Service'
+ *       400:
+ *         description: Categoría inválida
+ *       401:
+ *         description: No autorizado
+ *       404:
+ *         description: Servicios no encontrados para la categoría dada
+ */
+router.get(
+  "/category/:category",
+  verifyTokenMiddleware,
+  controllerServiceBarber.findByCategory
+);
+
 export default router;

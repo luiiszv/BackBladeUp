@@ -6,7 +6,7 @@ import { IServiceUpdate } from "../interfaces/IServiceUpdate";
 import { CreateServiceDto, ICreateServiceDto } from "../interfaces/create-service.dto";
 import { FirebaseStorageService } from "../../../utils/firebaseStorage";
 
-import { BarberServiceDto } from "../dto/BarberServiceDto";
+import { BarberServiceDto, ServiceCategory } from "../dto/BarberServiceDto";
 
 //Errors
 import { BadRequestError } from "../../../core/errors/BadRequestError";
@@ -40,7 +40,11 @@ export class ServiceBarber {
             );
         }
 
-        const newService = { ...service, barber: idBarber };
+        const newService = {
+            ...service,
+            barber: idBarber,
+            description: service.description ?? ""
+        };
 
         const user = await this.repositoryServiceBarber.create(newService);
         return BarberServiceDto.fromEntity(user);
@@ -63,12 +67,17 @@ export class ServiceBarber {
             }
         }
 
+        // Validar categoría si está presente
+        if (updates.category) {
+            const validCategories = ['Corte clásico', 'Fade', 'Diseño', 'Barba', 'Color', 'Tratamiento', 'Otro'];
+            if (!validCategories.includes(updates.category)) {
+                throw new BadRequestError('Invalid category.');
+            }
+        }
+
         // Si se sube una nueva imagen, reemplazar la anterior
         let imageUrl = service.imageUrl;
-        console.log("pasa")
-        console.log(file)
         if (file) {
-            console.log("si pasa ")
             imageUrl = await this.storageService.uploadFile(
                 `barbers/${service.barber}/services`,
                 file.path,
@@ -106,6 +115,20 @@ export class ServiceBarber {
         return await this.repositoryServiceBarber.findAll();
 
     }
+
+
+
+    async findByCategory(category: ServiceCategory): Promise<object[]> {
+
+        const validCategories = ['Corte clásico', 'Fade', 'Diseño', 'Barba', 'Color', 'Tratamiento', 'Otro'];
+        if (!validCategories.includes(category)) {
+            throw new BadRequestError('Invalid category.');
+        }
+
+        return await this.repositoryServiceBarber.findByCategory(category);
+
+    }
+
 
 
 

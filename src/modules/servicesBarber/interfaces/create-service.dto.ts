@@ -1,32 +1,46 @@
+
 export interface ICreateServiceDto {
     name: string;
-    price: Number; // ✅ tipo primitivo
+    price: number;
     description?: string;
+    category: 'Corte clásico' | 'Fade' | 'Diseño' | 'Barba' | 'Color' | 'Tratamiento' | 'Otro';
     imageUrl?: string;
 }
 
 export class CreateServiceDto {
     private constructor(
         public readonly name: string,
-        public readonly price: Number,
-        public readonly description?: string,
-        public imageUrl?: string
+        public readonly price: number,
+        public readonly description: string,
+        public readonly category: 'Corte clásico' | 'Fade' | 'Diseño' | 'Barba' | 'Color' | 'Tratamiento' | 'Otro',
+        public readonly imageUrl?: string
     ) { }
 
-    // Factory method con validación
     static create(props: Partial<ICreateServiceDto>): [string | null, CreateServiceDto?] {
         if (!props) {
             return ['Data required'];
         }
 
-        const { name, price, description = "Description", imageUrl } = props; // ✅ accede a description correctamente
+        const {
+            name,
+            price,
+            description = 'Descripción',
+            category= "Otro",
+            imageUrl
+        } = props;
 
-        // Validaciones básicas
-        if (!name || price === undefined || price === null) {
-            return ['Name and price are required'];
+     
+
+        // Validaciones
+        if (!name || price === undefined || price === null || !category) {
+            return ['Name, price and category are required'];
         }
 
-        // Opcional: validar que imageUrl sea string y no vacío si se envía
+        const validCategories = ['Corte clásico', 'Fade', 'Diseño', 'Barba', 'Color', 'Tratamiento', 'Otro'];
+        if (!validCategories.includes(category)) {
+            return ['Invalid category'];
+        }
+
         if (imageUrl && typeof imageUrl !== 'string') {
             return ['Invalid image URL'];
         }
@@ -37,6 +51,7 @@ export class CreateServiceDto {
                 name.trim(),
                 price,
                 description,
+                category,
                 imageUrl
             ),
         ];

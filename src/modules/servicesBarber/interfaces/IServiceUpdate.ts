@@ -6,5 +6,8 @@ export interface IServiceUpdate extends Document {
     name?: string;
     description?: string;
     price?: number;
+    category: 'Corte clásico' | 'Fade' | 'Diseño' | 'Barba' | 'Color' | 'Tratamiento' | 'Otro';
+    imageUrl: string;
+
 
 }

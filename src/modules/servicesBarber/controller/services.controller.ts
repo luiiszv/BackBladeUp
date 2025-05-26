@@ -4,6 +4,7 @@ import { IServiceResponse } from "../interfaces/IServiceResponse";
 import { CreateServiceDto, ICreateServiceDto } from "../interfaces/create-service.dto";
 import { HttpError } from "../../../core/errors/HttpError";
 import admin from "../../../config/firebase";
+import { ServiceCategory } from "../dto/BarberServiceDto";
 
 export class ServicesBarberController {
     constructor(private servicesBarber: ServiceBarber) { }
@@ -16,6 +17,7 @@ export class ServicesBarberController {
                 name: req.body.name,
                 price: Number(req.body.price),
                 description: req.body.description,
+                category: req.body.category
             };
 
             const [error, createServiceDto] = CreateServiceDto.create(props);
@@ -95,6 +97,22 @@ export class ServicesBarberController {
         try {
 
             const response = await this.servicesBarber.findAll();
+            res.status(200).json(response);
+
+        } catch (error) {
+
+            next()
+
+        }
+
+    }
+
+
+    findByCategory = async (req: Request, res: Response, next: NextFunction) => {
+
+        try {
+            const { category } = req.params;
+            const response = await this.servicesBarber.findByCategory(category as ServiceCategory);
             res.status(200).json(response);
 
         } catch (error) {

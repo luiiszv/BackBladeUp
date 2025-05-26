@@ -1,4 +1,13 @@
 
+// src/interfaces/types.ts
+export type ServiceCategory =
+    | 'Corte clásico'
+    | 'Fade'
+    | 'Diseño'
+    | 'Barba'
+    | 'Color'
+    | 'Tratamiento'
+    | 'Otro';
 
 
 export class BarberServiceDto {
@@ -7,6 +16,7 @@ export class BarberServiceDto {
         public readonly price: Number,
         public readonly barber: string,
         public readonly imageUrl: string,
+       public readonly category: ServiceCategory
 
     ) { }
 
@@ -15,7 +25,9 @@ export class BarberServiceDto {
             barberService.name,
             barberService.price,
             barberService.barber,
-            barberService.imageUrl
+            barberService.imageUrl,
+            barberService.category
+
         );
     }
 }

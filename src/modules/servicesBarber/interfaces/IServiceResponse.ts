@@ -18,5 +18,7 @@ export interface IServiceResponse extends Document {
     description?: string;
     price: number;
     barber: IBarberResponse;
+    category: 'Corte clásico' | 'Fade' | 'Diseño' | 'Barba' | 'Color' | 'Tratamiento' | 'Otro';
     imageUrl: string;
+
 }
