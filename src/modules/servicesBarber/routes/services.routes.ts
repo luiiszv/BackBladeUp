@@ -284,4 +284,47 @@ router.get(
   controllerServiceBarber.findByCategory
 );
 
+
+
+/**
+ * @swagger
+ * /api/barber-services/delete/{id}:
+ *   get:
+ *     summary: Eliminar un servicio por ID
+ *     tags: [BarberServices]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID del servicio a eliminar
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Servicio eliminado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Servicio eliminado correctamente
+ *       401:
+ *         description: No autorizado
+ *       403:
+ *         description: Acceso denegado
+ *       404:
+ *         description: Servicio no encontrado
+ */
+
+router.delete(
+  "/delete/:id",
+  verifyTokenMiddleware,
+  controllerServiceBarber.delete
+);
+
+
 export default router;

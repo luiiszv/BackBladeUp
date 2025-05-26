@@ -67,6 +67,10 @@ export class RepositoryBarber {
         )
     }
 
+    async delete(id: string): Promise<IServiceResponse | null> {
+        return await this.serviceModel.findByIdAndDelete(id)
+    }
+
 
 
 }

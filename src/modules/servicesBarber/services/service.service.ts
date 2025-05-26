@@ -11,7 +11,7 @@ import { BarberServiceDto, ServiceCategory } from "../dto/BarberServiceDto";
 //Errors
 import { BadRequestError } from "../../../core/errors/BadRequestError";
 import { NotFoundError } from "../../../core/errors/NotFoundError";
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 
 export class ServiceBarber {
     constructor(private repositoryServiceBarber: RepositoryBarber, private storageService: FirebaseStorageService) {
@@ -126,6 +126,24 @@ export class ServiceBarber {
         return await this.repositoryServiceBarber.findByCategory(category);
 
     }
+
+    async delete(id: string): Promise<object | null> {
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            throw new BadRequestError('Invalid id');
+        }
+
+        const servieExist = await this.repositoryServiceBarber.findServiceById(id);
+        if (!servieExist) {
+            throw new NotFoundError('Service');
+        }
+
+
+
+        return await this.repositoryServiceBarber.delete(id);
+
+    }
+
 
 
 

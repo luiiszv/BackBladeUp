@@ -62,6 +62,20 @@ export class ServicesBarberController {
 
     }
 
+    delete = async (req: Request, res: Response, next: NextFunction) => {
+        const idService = req.params.id;
+        try {
+
+            const response = await this.servicesBarber.delete(idService);
+            res.status(200).json(response);
+
+        } catch (error) {
+            console.log(error)
+            next(error);
+        }
+
+    }
+
 
     findBarberServicesByBarberAuth = async (req: Request, res: Response, next: NextFunction) => {
         try {
